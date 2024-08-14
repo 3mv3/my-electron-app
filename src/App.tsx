@@ -2,7 +2,7 @@ import logo from './images/logo.svg';
 import './App.css';
 import DropDown from './components/DropDown'
 import MyTab from './components/Tabs';
-import { TableBody, Spinner, Text, ProgressBar, Button, Modal, Dialog,Header } from '@rf-smart-for-oraclecloud/ui';
+import { TableBody, Text, ProgressBar, Button, Modal, Dialog,Header } from 'react-aria-components';
 import { useEffect, useState } from 'react';
 import {
   HashRouter,
@@ -27,9 +27,9 @@ function App() {
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'stretch'}}>
-            <Text>{adminView ? 'Admin' : 'RF-SMART Phoenix Onboarding'}</Text>
+            <Text>{adminView ? 'Admin' : 'Landing Page'}</Text>
               <img src={logo} className="App-logo" alt="logo" />
-            <Button onClick={e => setAdmin(!adminView)}>{adminView ? 'Return' : 'Admin'}</Button>
+            <Button onClick={(e: any) => setAdmin(!adminView)}>{adminView ? 'Return' : 'Admin'}</Button>
         </div>
 
 <div style={{ position: 'fixed', 

@@ -1,5 +1,5 @@
 import {Tabs, TabList, Tab, TabPanel} from 'react-aria-components';
-import { Modal, Dialog, ProgressBar, Button, Checkbox, CheckboxGroup, Text, Label, Spinner } from '@rf-smart-for-oraclecloud/ui';
+import { Modal, Dialog, ProgressBar, Button, Checkbox, CheckboxGroup, Text, Label } from 'react-aria-components';
 import { useEffect, useState } from 'react';
 import { Heading, DialogTrigger, TextField, Input } from 'react-aria-components'
 import ITab from '../db/ITab';
@@ -166,7 +166,7 @@ new window.Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
                     <Button onClick={props.isAdmin ? addTab : saveProgress}>{props.isAdmin ? 'Add Tab' : 'Save'}</Button>
                     
                 </div>
-                {savingProgress && <Spinner />}
+                { savingProgress && <Text>Saving progress...</Text> }
                 {!savingProgress && tabs.map(x => 
                     <TabPanel key={`${x.name}_panel`} id={`${x.name}`}>
                         <CheckboxGroup value={checkboxes} onChange={setCheckboxState}>
@@ -184,18 +184,17 @@ new window.Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
                                             onChange={(e: boolean) => updateProgress(e, step.name)}>
                                             {step.name}
                                         </Checkbox>
-                                        {props.isAdmin && <Button onClick={e => removeStep(step.name)}>Delete step</Button>}
+                                        {props.isAdmin && <Button onClick={(e: any) => removeStep(step.name)}>Delete step</Button>}
                                     </div>
                                 )
                             }
                             {
-                                !curSteps && <Spinner></Spinner>
+                                !curSteps && <Text>Loading steps...</Text>
                             }
                         </CheckboxGroup>
                     </TabPanel>
                 )}
             </Tabs>
         </div>
-        
     )
 }
