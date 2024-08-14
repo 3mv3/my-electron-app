@@ -5,6 +5,7 @@ import { Heading, DialogTrigger, TextField, Input } from 'react-aria-components'
 import ITab from '../db/ITab';
 import IStep from '../types/IStep';
 import IProgress from '../types/IProgress';
+import MyCheckbox from './MyCheckbox';
 
 export default function MyTab(props: {isAdmin?: boolean}) {
     const [tabProgress, setTabProgress] = useState<IProgress>()
@@ -178,12 +179,13 @@ new window.Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
                             {
                                 curSteps && curSteps.map(step => 
                                     <div style={{display: 'flex', alignItems: 'center', 'justifyContent': 'space-between'}}>
-                                        <Checkbox 
+                                        <MyCheckbox 
+                                            name={`${step.name}_cb`}
                                             value={step.name}
                                             key={step.name}
                                             onChange={(e: boolean) => updateProgress(e, step.name)}>
                                             {step.name}
-                                        </Checkbox>
+                                        </MyCheckbox>
                                         {props.isAdmin && <Button onClick={(e: any) => removeStep(step.name)}>Delete step</Button>}
                                     </div>
                                 )
