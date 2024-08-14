@@ -1,0 +1,62 @@
+{
+  "name": "electron-react-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "electron react app",
+  "main": "main.js",
+  "dependencies": {
+    "@rf-smart-for-oraclecloud/ui": "^3.0.3",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.8.0",
+    "react": "^18.3.1",
+    "react-aria-components": "^1.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "build": {
+    "appId": "com.example.myapp",
+    "productName": "My Electron App",
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "scripts": {
+    "start:mongo": "docker-compose -f ./docker/docker-compose.yml up -d",
+    "stop:mongo": "docker-compose -f ./docker/docker-compose.yml down",
+    "predev": "start \"React Server\" powershell -noexit npm run start",
+    "dev": "electron .",
+    "dist": "electron-builder",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^31.2.1",
+    "electron-builder": "^24.13.3",
+    "electron-is-dev": "^3.0.1"
+  }
+}
