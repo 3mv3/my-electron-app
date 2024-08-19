@@ -27,14 +27,14 @@
   "scripts": {
     "start:mongo": "docker-compose -f ./docker/docker-compose.yml up -d",
     "stop:mongo": "docker-compose -f ./docker/docker-compose.yml down",
-    "dev": "electron .",
+    "dev": "wait-on tcp:3000 && electron .",
     "dist": "electron-builder",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "\n==========LIFECYCLE HOOKS============": "",
-    "predev": "start \"React Server\" powershell -noexit npm run start"
+    "predev": "node ./scripts/predev.js"
   },
   "eslintConfig": {
     "extends": [
@@ -55,8 +55,10 @@
     ]
   },
   "devDependencies": {
+    "detect-port": "^1.6.1",
     "electron": "^31.2.1",
     "electron-builder": "^24.13.3",
-    "electron-is-dev": "^3.0.1"
+    "electron-is-dev": "^3.0.1",
+    "wait-on": "^7.2.0"
   }
 }
