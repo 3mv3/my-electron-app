@@ -1,13 +1,11 @@
-import {Tabs, TabList, Tab, TabPanel} from 'react-aria-components';
-import { Modal, Dialog, ProgressBar, Button, Checkbox, CheckboxGroup, Text, Label } from 'react-aria-components';
+import { Tabs, TabList, Tab, TabPanel, ProgressBar, Button, Checkbox, CheckboxGroup, Text, Label } from 'react-aria-components';
 import { useEffect, useState } from 'react';
-import { Heading, DialogTrigger, TextField, Input } from 'react-aria-components'
 import ITab from '../db/ITab';
 import IStep from '../types/IStep';
 import IProgress from '../types/IProgress';
-import MyCheckbox from './MyCheckbox';
+import MyCheckbox from '../components/MyCheckbox';
 
-export default function MyTab(props: {isAdmin?: boolean}) {
+export default function ProgressPage() {
     const [tabProgress, setTabProgress] = useState<IProgress>()
     const [curTab, setCurTab] = useState<ITab>()
     const [curSteps, setCurSteps] = useState<IStep[]>()
@@ -18,15 +16,6 @@ export default function MyTab(props: {isAdmin?: boolean}) {
 
     useEffect(() => {
         const ping = async () => {
-            // window.electron.ipcRenderer.once('ipc-example', (arg) => {
-            //   // eslint-disable-next-line no-console
-            //   console.log(arg);
-            // });
-            // window.electron.ipcRenderer.myPing();
-            // console.log(await window.electron.nodeV());
-            // const filePath = await window.electron.openFile()
-            // setFile(filePath)
-        
             let res = await window.electron.queryDb<ITab>('onboarding', 'tabs', {})
 
             setTabs(res)
@@ -34,33 +23,23 @@ export default function MyTab(props: {isAdmin?: boolean}) {
             let firstTab = res[0]
             setCurTab(firstTab)
 
-            if (!props.isAdmin) {
-                let progress = await window.electron.queryDb<IProgress>('onboarding', 'progress', {
-                    tab: firstTab.name
-                })
-                setTabProgress(progress[0])
+            let progress = await window.electron.queryDb<IProgress>('onboarding', 'progress', {
+                tab: firstTab.name
+            })
 
-                if (progress[0]) {
-                    setCurSteps(progress[0].steps)
-                    setCheckboxState(progress[0].steps.filter(x => x.value == true).map(x => x.name))
-                }
-                else {
-                    setCurSteps(firstTab.steps.map(x => {
-                                        return {
-                                            name: x,
-                                            value: false
-                                        } as IStep
-                                    }))
-                }
+            setTabProgress(progress[0])
+
+            if (progress[0]) {
+                setCurSteps(progress[0].steps)
+                setCheckboxState(progress[0].steps.filter(x => x.value == true).map(x => x.name))
             }
             else {
-            setCurSteps(firstTab.steps.map(x => {
-                                        return {
-                                            name: x,
-                                            value: false
-                                        } as IStep
-                                    }))
-                
+                setCurSteps(firstTab.steps.map(x => {
+                                    return {
+                                        name: x,
+                                        value: false
+                                    } as IStep
+                                }))
             }
 
             setLoadingProgress(false)
@@ -157,6 +136,10 @@ new window.Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
     })
  }
 
+ async function testCli() {
+    console.log(await window.electron.getNodeVersion())
+ }
+
     return (
         <div>
             <Tabs onSelectionChange={tabChange}>
@@ -164,29 +147,26 @@ new window.Notification(NOTIFICATION_TITLE, { body: NOTIFICATION_BODY })
                     <TabList aria-label="Onboarding Material">
                         {tabs.map(x => <Tab key={`${x.name}_tab`} id={`${x.name}`}>{x.name}</Tab>)}
                     </TabList>
-                    <Button onClick={props.isAdmin ? addTab : saveProgress}>{props.isAdmin ? 'Add Tab' : 'Save'}</Button>
-                    
+                    <Button onPress={saveProgress}>Save</Button>
+                    <Button onPress={testCli}>Test CLI</Button>
                 </div>
-                { savingProgress && <Text>Saving progress...</Text> }
-                {!savingProgress && tabs.map(x => 
+                { savingProgress && <Text> Saving progress... </Text> }
+                { !savingProgress && tabs.map(x => 
                     <TabPanel key={`${x.name}_panel`} id={`${x.name}`}>
                         <CheckboxGroup value={checkboxes} onChange={setCheckboxState}>
                             <div style={{display: 'flex', alignItems: 'center', 'justifyContent': 'space-between'}}>
                                 <Label>{x.description}</Label>
-                                {!props.isAdmin && <ProgressBar value={getStateProgress()}></ProgressBar>}
-                                {props.isAdmin && <Button>Change description</Button>}
+                                <ProgressBar value={getStateProgress()}></ProgressBar>
                             </div>
                             {
                                 curSteps && curSteps.map(step => 
                                     <div style={{display: 'flex', alignItems: 'center', 'justifyContent': 'space-between'}}>
                                         <MyCheckbox 
-                                            name={`${step.name}_cb`}
                                             value={step.name}
                                             key={step.name}
                                             onChange={(e: boolean) => updateProgress(e, step.name)}>
                                             {step.name}
                                         </MyCheckbox>
-                                        {props.isAdmin && <Button onClick={(e: any) => removeStep(step.name)}>Delete step</Button>}
                                     </div>
                                 )
                             }

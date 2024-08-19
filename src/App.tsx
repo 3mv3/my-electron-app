@@ -1,18 +1,33 @@
 import logo from './images/logo.svg';
 import './App.css';
-import DropDown from './components/DropDown'
-import MyTab from './components/Tabs';
-import { TableBody, Text, ProgressBar, Button, Modal, Dialog,Header } from 'react-aria-components';
+import { Text, Button } from 'react-aria-components';
 import { useEffect, useState } from 'react';
 import {
-  HashRouter,
-  Route
+  Route,
+  Routes,
+  useNavigate,
+  useLocation
 } from "react-router-dom";
+import ProgressPage from './pages/ProgressPage';
+import AdminPage from './pages/AdminPage';
+import AddTabModal from './pages/AddTabModal';
 
 function App() {
-  const [adminView, setAdmin] = useState(false)
-  const [isOpen, setOpen] = useState(false);
-  const [file, setFile] = useState('')
+  const [title, setTitle] = useState('Landing Page')
+  const [nextPage, setNextPage] = useState('/admin')
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname == '/') {
+      setTitle('Landing Page')
+      setNextPage('/admin')
+    }
+    else {
+      setTitle('Admin')
+      setNextPage('/')
+    }
+  }, [location.pathname])
 
   return (
     <div className="App">
@@ -27,28 +42,25 @@ function App() {
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'stretch'}}>
-            <Text>{adminView ? 'Admin' : 'Landing Page'}</Text>
+            <Text>{title}</Text>
               <img src={logo} className="App-logo" alt="logo" />
-            <Button onClick={(e: any) => setAdmin(!adminView)}>{adminView ? 'Return' : 'Admin'}</Button>
+            <Button style={{ position: 'fixed' }} onPress={(e:any) => navigate(nextPage)}>{title == 'Admin' ? 'Back' : 'Admin'}</Button>
         </div>
-
-<div style={{ position: 'fixed', 
-bottom: '0px', 
-margin: '1%', 
-outline: '2px dashed red', 
-width: '98%', 
-height: '48%', 
-display: 'flex', 
-flexDirection: 'column',
-alignItems: 'stretch'}}>
-{ !adminView && 
-            <MyTab></MyTab>
-        }
-        { adminView && 
-            <MyTab isAdmin></MyTab>
-        }
-  </div>
-        
+        <div style={{ position: 'fixed', 
+          bottom: '0px', 
+          margin: '1%', 
+          outline: '2px dashed red', 
+          width: '98%', 
+          height: '48%', 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'stretch'}}>
+              <Routes>
+                <Route path="/" Component={ProgressPage} />
+                <Route path="/admin" Component={AdminPage} />
+                <Route path="/addtab" Component={AddTabModal} />
+              </Routes>
+        </div>
       </header>
     </div>
   );

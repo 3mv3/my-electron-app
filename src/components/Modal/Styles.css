@@ -1,0 +1,41 @@
+@keyframes addOverlay {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+  to {
+    background: rgba(44, 57, 103, 0.3);
+  }
+}
+
+.content {
+  padding: 0 24px 32px;
+}
+
+.header {
+  align-items: center;
+  color: #697386;
+  display: flex;
+  /* font-weight: fonts.weight.bold; */
+  justify-content: space-between;
+  margin-bottom: 36px;
+  padding: 16px 24px 0;
+  position: relative;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 8px;
+  left: 50%;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.overlay {
+  animation: addOverlay 0.3s forwards;
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+}
