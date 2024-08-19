@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld('electron', {
   electronV: () => process.versions.electron,
   queryDb: (db, collection, query) => ipcRenderer.invoke('queryDb', db, collection, query),
   insertOneDb: (db, collection, query, data) => ipcRenderer.invoke('insertOneDb', db, collection, query, data),
-  launchModal: (url) => ipcRenderer.invoke('launchModal', url)
+  launchModal: (url) => ipcRenderer.invoke('launchModal', url),
+  getNodeVersion: () => ipcRenderer.invoke('node:version')
 });

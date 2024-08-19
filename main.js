@@ -2,6 +2,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron/main')
 const path = require('node:path')
 const { MongoClient } = require('mongodb');
+const { execSync } = require('child_process')
+
 require('dotenv').config()
 
 async function handleFileOpen () {
@@ -67,39 +69,49 @@ const createWindow = () => {
   return mainWindow
 }
 
+function showNewWindow(url) {
+  /// https://www.electronjs.org/docs/latest/api/browser-window
+  const child = new BrowserWindow({ parent: main, modal: true, show: false, 
+    // frame: false,
+    // titleBarStyle: 'hidden',
+    // transparent: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+    resizable: false,
+    minWidth: 400,
+    width: 400,
+    maxWidth: 400,
+    minHeight: 300, 
+    height: 300,
+    maxHeight: 300 })
+
+  child.loadURL(url)
+  child.once('ready-to-show', () => {
+    child.show()
+  })
+}
+
+function exec(args) {
+  console.log("running cli");
+  
+  return execSync(args).toString();
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
   ipcMain.handle('dialog:openFile', handleFileOpen)
-  ipcMain.handle('queryDb', (event, db, col, q) => queryDb(db, col, q))
-  ipcMain.handle('insertOneDb', (event, db, col, query, data) => insertOneDb(db, col, query, data))
+  ipcMain.handle('queryDb', (_, db, col, q) => queryDb(db, col, q))
+  ipcMain.handle('insertOneDb', (_, db, col, query, data) => insertOneDb(db, col, query, data))
+  ipcMain.handle('launchModal', (_, url) => showNewWindow(url))
+  ipcMain.handle("node:version", async (_) => exec("node -v"));
 
   // Connect the client to the server (optional starting in v4.7)
   await client.connect();
 
   let main = createWindow()
-
-  ipcMain.handle('launchModal', (event, url) => {
-
-    /// https://www.electronjs.org/docs/latest/api/browser-window
-    const child = new BrowserWindow({ parent: main, modal: true, show: false, 
-      frame: false,
-      titleBarStyle: 'hidden',
-      // transparent: true,
-      resizable: false,
-      minWidth: 400,
-      width: 400,
-      maxWidth: 400,
-      minHeight: 300, 
-      height: 300,
-      maxHeight: 300 })
-
-    child.loadURL(url)
-    child.once('ready-to-show', () => {
-      child.show()
-    })
-  })
 
   app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
